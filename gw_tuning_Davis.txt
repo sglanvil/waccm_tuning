@@ -5,9 +5,14 @@ There are several key parameters to tune gravity waves in CESM:
 ●	effgw_rdg_beta(_max): orographic gravity wave efficiency
 ●	front_gaussian_width: half-width of the frontal gravity wave spectrum
 
-In general, effgw_beres is used to tune the QBO, while frontgfc/taubgnd/effgw_rdg_beta(_max) tune the midlatitudes and poles, specifically the stratospheric/mesosphere jet and the mesopause region.
+In general, effgw_beres is used to tune the QBO, while frontgfc/taubgnd/effgw_rdg_beta(_max) tune the midlatitudes and poles, 
+specifically the stratospheric/mesosphere jet and the mesopause region.
 
-However, these gravity wave parameters have global impacts, so addressing model biases does not always have an obvious solution (and there are probably multiple valid solutions). Below are plots of the impact of adjustments in each parameter, with the adjustments shown in the table below. These adjustments are intended to produce an impact of similar magnitude  and sign (to give an idea a reasonable tuning adjustment). All results are from ne16np4 at 135 vertical levels. Different vertical level schemes will probably have different sensitivities.
+However, these gravity wave parameters have global impacts, so addressing model biases does not always have an obvious solution 
+(and there are probably multiple valid solutions). Below are plots of the impact of adjustments in each parameter,
+with the adjustments shown in the table below. These adjustments are intended to produce an impact of similar magnitude  
+and sign (to give an idea a reasonable tuning adjustment). All results are from ne16np4 at 135 vertical levels. 
+Different vertical level schemes will probably have different sensitivities.
 
 effgw_rdg_beta and effgw_rdg_beta_max should be adjusted together (I think), front_gaussian_width needs to be manually adjusted in gw_drag.F90. 
 
@@ -26,30 +31,49 @@ effgw_rdg_beta and effgw_rdg_beta_max should be adjusted together (I think), fro
  
 Impact of gravity wave parameter changes on the zonal mean zonal wind in DJF. From 10-year simulations.
 
-All of the parameters project globally. Some of the effects are local - there is deep convection even in the midlatitudes, so obviously changing effgw_beres will impact the midlatitudes. But some of it is also probably remote impacts of changes in the residual circulation/local momentum, changes in which will alter momentum transport and therefore the zonal mean zonal wind remotely.
+All of the parameters project globally. Some of the effects are local - there is deep convection even in the midlatitudes, 
+so obviously changing effgw_beres will impact the midlatitudes. But some of it is also probably remote impacts of changes 
+in the residual circulation/local momentum, changes in which will alter momentum transport and therefore the zonal mean zonal wind remotely.
 
-In general, increasing effgw_rdg_beta(_max) weakens the SH polar vortex in JJA, while it shifts the NH polar vortex equatorward. In DJF it also projects onto the SH mesopause, but does not project much onto the NH mesopause in JJA. This is an important hemispheric difference.
+In general, increasing effgw_rdg_beta(_max) weakens the SH polar vortex in JJA, while it shifts the NH polar vortex equatorward. 
+In DJF it also projects onto the SH mesopause, but does not project much onto the NH mesopause in JJA. This is an important hemispheric difference.
 
-Decreasing taubgnd tends to weaken and shift the NH polar vortex upward in DJF, while it tends to strengthen the SH polar vortex in JJA. It has a similar impact on the lower thermospheric jets/mesopause in each summer hemisphere. 
+Decreasing taubgnd tends to weaken and shift the NH polar vortex upward in DJF, while it tends to strengthen the SH polar 
+vortex in JJA. It has a similar impact on the lower thermospheric jets/mesopause in each summer hemisphere. 
 
-Increasing frontgfc and narrowing the spectrum have some similar impacts in DJF, but quite different impacts in JJA. Increasing frontgfc and narrowing the spectrum both shift the NH polar vortex/mesospheric jet poleward in DJF, and cool the mesopause/weaken the lower thermospheric jet in summer in each hemisphere, though it’s stronger in the SH. In JJA, increasing frontgfc strengthens the SH polar vortex and shifts it equatorward, while narrowing the spectrum shifts the vortex upward. In general, adjusting the spectrum width projects more strongly onto the MLT, while adjusting frontgfc projects more strongly onto the stratosphere. I think this can be used to effectively tune the vortex and mesopause separately (or at least as much as that could be possible).
+Increasing frontgfc and narrowing the spectrum have some similar impacts in DJF, but quite different impacts in JJA. 
+Increasing frontgfc and narrowing the spectrum both shift the NH polar vortex/mesospheric jet poleward in DJF, and 
+cool the mesopause/weaken the lower thermospheric jet in summer in each hemisphere, though it’s stronger in the SH. 
+In JJA, increasing frontgfc strengthens the SH polar vortex and shifts it equatorward, while narrowing the spectrum 
+shifts the vortex upward. In general, adjusting the spectrum width projects more strongly onto the MLT, while adjusting 
+frontgfc projects more strongly onto the stratosphere. I think this can be used to effectively tune the vortex and mesopause 
+separately (or at least as much as that could be possible).
  
 
 Impact of gravity wave parameter changes on the zonal mean zonal wind in JJA. From 10-year simulations.
 
-The convective waves obviously have big effects on the QBO, but also project slightly onto the midlatitudes, shifting the location of stratospheric westerly/easterly jets. The other parameters seem to have a minimal impact on the QBO amplitude/frequency.
+The convective waves obviously have big effects on the QBO, but also project slightly onto the midlatitudes, 
+shifting the location of stratospheric westerly/easterly jets. The other parameters seem to have a minimal impact on the QBO amplitude/frequency.
 
 In summary:
-●	If you want to cool/warm the mesopause, start with changing the spectrum half-width. You may need to adjust frontgfc in the opposite sense to cancel out, for example, unwanted impacts in the stratosphere/mesosphere. 
+●	If you want to cool/warm the mesopause, start with changing the spectrum half-width. You may need to adjust frontgfc in the 
+opposite sense to cancel out, for example, unwanted impacts in the stratosphere/mesosphere. 
 ●	If you want to strengthen/weaken the polar vortices, adjust taubgnd and oro, noting there are some hemispheric asymmetries. 
-●	If you want to adjust just the SH polar vortex, focus on frontgfc. Changing the oro or taubgnd parameters can be a way to cancel out the meager response in the NH.
-●	If you adjust the QBO period with effgw_beres, you will need to perform compensating changes in taubgnd, frontgfc, and effgw_rdg_beta(_max) to maintain the polar vortices.
+●	If you want to adjust just the SH polar vortex, focus on frontgfc. Changing the oro or taubgnd parameters can be a way to 
+cancel out the meager response in the NH.
+●	If you adjust the QBO period with effgw_beres, you will need to perform compensating changes in taubgnd, frontgfc, and 
+effgw_rdg_beta(_max) to maintain the polar vortices.
 
 10 year simulations seem adequate to eliminate the role of interannual variability in the middle atmosphere climate.	
 
-Making front_gaussian_width a namelist parameter is currently an issue on the CAM github. Right now the spectrum width needs to be manually adjusted in gw_drag.F90.
+Making front_gaussian_width a namelist parameter is currently an issue on the CAM github. Right now the spectrum width needs to be 
+manually adjusted in gw_drag.F90.
 
-I think a useful approach to tuning is to imagine 2-4 needed changes, perform runs with those changes in isolation (to see their individual impact), and then perform one run with all changes (to see the non-additive impacts).
+I think a useful approach to tuning is to imagine 2-4 needed changes, perform runs with those changes in isolation (to see their 
+individual impact), and then perform one run with all changes (to see the non-additive impacts).
 
-Based on the tuning run results at https://docs.google.com/spreadsheets/d/1AGgJjcPOED0xl5bldM4J5cxCsn7pE9VSxqHddmwb6zc/edit?usp=sharing, I think that slightly increasing effgw_beres and decreasing oro could be a good step forward. Slight changes in taubgnd could help, too. The QBO shifted upward with the HB diff scheme implementation/CLUBB changes, so I’m not sure there is a way to get the QBO to shift back down with just gravity wave tuning.
+Based on the tuning run results at https://docs.google.com/spreadsheets/d/1AGgJjcPOED0xl5bldM4J5cxCsn7pE9VSxqHddmwb6zc/edit?usp=sharing, 
+I think that slightly increasing effgw_beres and decreasing oro could be a good step forward. Slight changes in taubgnd could help, too. 
+The QBO shifted upward with the HB diff scheme implementation/CLUBB changes, so I’m not sure there is a way to get the QBO to shift back 
+down with just gravity wave tuning.
  
