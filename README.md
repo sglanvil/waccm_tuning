@@ -8,3 +8,4 @@ Each simulation ("tuning run") is a github "issue" and these can be sorted by la
 
 Discussions can take place in a thread at the bottom of each "issue". You can import figures into these threads.
 
+Now posting these runs to NCAR/wawg_dev repo.
